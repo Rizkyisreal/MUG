@@ -1,0 +1,1604 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cash Flow Supplier Rempah</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 24px;
+            color: var(--warning);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 80vh;
+        }
+
+        .sidebar {
+            background: var(--light);
+            padding: 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin: 5px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .nav-item:hover {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .content {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card i {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .income-card i { color: var(--success); }
+        .expense-card i { color: var(--danger); }
+        .balance-card i { color: var(--secondary); }
+        .receivable-card i { color: var(--warning); }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .form-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+        }
+
+        .btn-success { background: var(--success); }
+        .btn-danger { background: var(--danger); }
+        .btn-warning { background: var(--warning); }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: var(--light);
+            font-weight: 600;
+        }
+
+        .badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-success { background: #d4edda; color: #155724; }
+        .badge-danger { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+
+        .search-box {
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            max-width: 300px;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .login-container h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: var(--primary);
+        }
+
+        .alert {
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <h2><i class="fas fa-seedling"></i> Cash Flow Rempah</h2>
+        <div id="loginAlert" class="alert"></div>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="loginEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <p style="margin-top: 15px; text-align: center;">
+            Belum punya akun? <a href="#" onclick="showRegister()">Daftar di sini</a>
+        </p>
+    </div>
+
+    <!-- Register Page -->
+    <div id="registerPage" class="login-container" style="display: none;">
+        <h2><i class="fas fa-user-plus"></i> Daftar Akun Baru</h2>
+        <div id="registerAlert" class="alert"></div>
+        <form id="registerForm">
+            <div class="form-group">
+                <label>Nama Perusahaan</label>
+                <input type="text" id="registerCompany" required>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" id="registerEmail" required>
+            </div>
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="registerPassword" required minlength="6">
+            </div>
+            <div class="btn-group">
+                <button type="submit" class="btn-success">Daftar</button>
+                <button type="button" onclick="showLogin()" class="btn-danger">Batal</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Main App (hidden until login) -->
+    <div id="appContainer" style="display: none;">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="logo">
+                    <i class="fas fa-seedling"></i>
+                    <h1 id="companyName">Supplier Rempah</h1>
+                </div>
+                <div class="user-info">
+                    <span id="userEmail"></span>
+                    <button onclick="logout()" class="btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Sidebar Navigation -->
+                <div class="sidebar">
+                    <div class="nav-item active" onclick="showPage('dashboard')">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </div>
+                    <div class="nav-item" onclick="showPage('transactions')">
+                        <i class="fas fa-exchange-alt"></i> Transaksi
+                    </div>
+                    <div class="nav-item" onclick="showPage('customers')">
+                        <i class="fas fa-users"></i> Pelanggan
+                    </div>
+                    <div class="nav-item" onclick="showPage('suppliers')">
+                        <i class="fas fa-truck"></i> Supplier
+                    </div>
+                    <div class="nav-item" onclick="showPage('receivables')">
+                        <i class="fas fa-hand-holding-usd"></i> Piutang
+                    </div>
+                    <div class="nav-item" onclick="showPage('debts')">
+                        <i class="fas fa-money-bill-wave"></i> Utang
+                    </div>
+                    <div class="nav-item" onclick="showPage('reports')">
+                        <i class="fas fa-chart-bar"></i> Laporan
+                    </div>
+                </div>
+
+                <!-- Content Area -->
+                <div class="content">
+                    <!-- Dashboard Page -->
+                    <div id="dashboardPage" class="page active">
+                        <h2><i class="fas fa-tachometer-alt"></i> Dashboard</h2>
+                        <div class="stats-grid">
+                            <div class="stat-card balance-card">
+                                <i class="fas fa-wallet"></i>
+                                <h3>Saldo Saat Ini</h3>
+                                <div class="stat-value" id="currentBalance">Rp 0</div>
+                            </div>
+                            <div class="stat-card income-card">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <h3>Pemasukan Bulan Ini</h3>
+                                <div class="stat-value" id="monthlyIncome">Rp 0</div>
+                            </div>
+                            <div class="stat-card expense-card">
+                                <i class="fas fa-shopping-cart"></i>
+                                <h3>Pengeluaran Bulan Ini</h3>
+                                <div class="stat-value" id="monthlyExpense">Rp 0</div>
+                            </div>
+                            <div class="stat-card receivable-card">
+                                <i class="fas fa-hand-holding-usd"></i>
+                                <h3>Total Piutang</h3>
+                                <div class="stat-value" id="totalReceivable">Rp 0</div>
+                            </div>
+                        </div>
+
+                        <div class="form-container">
+                            <h3>Transaksi Terbaru</h3>
+                            <div class="table-container">
+                                <table id="recentTransactions">
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Deskripsi</th>
+                                            <th>Tipe</th>
+                                            <th>Jumlah</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Transactions Page -->
+                    <div id="transactionsPage" class="page">
+                        <h2><i class="fas fa-exchange-alt"></i> Kelola Transaksi</h2>
+                        <div class="form-container">
+                            <h3>Tambah Transaksi Baru</h3>
+                            <form id="transactionForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Tipe Transaksi</label>
+                                        <select id="transType" required>
+                                            <option value="">Pilih Tipe</option>
+                                            <option value="income">Pemasukan</option>
+                                            <option value="expense">Pengeluaran</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Kategori</label>
+                                        <select id="transCategory" required>
+                                            <option value="">Pilih Kategori</option>
+                                            <option value="penjualan">Penjualan Rempah</option>
+                                            <option value="pembelian">Pembelian Bahan Baku</option>
+                                            <option value="operasional">Biaya Operasional</option>
+                                            <option value="gaji">Gaji Karyawan</option>
+                                            <option value="transport">Transportasi</option>
+                                            <option value="lainnya">Lainnya</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Jumlah (Rp)</label>
+                                        <input type="number" id="transAmount" required min="0">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Tanggal</label>
+                                        <input type="date" id="transDate" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Deskripsi</label>
+                                    <textarea id="transDescription" rows="3" required></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>Keterangan Tambahan</label>
+                                    <input type="text" id="transNotes" placeholder="Opsional">
+                                </div>
+                                <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan Transaksi</button>
+                            </form>
+                        </div>
+
+                        <div class="form-container">
+                            <h3>Daftar Transaksi</h3>
+                            <div class="search-box">
+                                <input type="text" id="searchTransaction" placeholder="Cari transaksi..." onkeyup="searchTransactions()">
+                            </div>
+                            <div class="table-container">
+                                <table id="transactionsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Deskripsi</th>
+                                            <th>Kategori</th>
+                                            <th>Tipe</th>
+                                            <th>Jumlah</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Customers Page -->
+                    <div id="customersPage" class="page">
+                        <h2><i class="fas fa-users"></i> Kelola Pelanggan</h2>
+                        <div class="form-container">
+                            <h3>Tambah Pelanggan Baru</h3>
+                            <form id="customerForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nama Pelanggan</label>
+                                        <input type="text" id="customerName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Telepon</label>
+                                        <input type="tel" id="customerPhone" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="customerEmail">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Limit Kredit (Rp)</label>
+                                        <input type="number" id="customerCreditLimit" min="0">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Alamat</label>
+                                    <textarea id="customerAddress" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan Pelanggan</button>
+                            </form>
+                        </div>
+
+                        <div class="form-container">
+                            <h3>Daftar Pelanggan</h3>
+                            <div class="table-container">
+                                <table id="customersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama</th>
+                                            <th>Telepon</th>
+                                            <th>Email</th>
+                                            <th>Limit Kredit</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Suppliers Page -->
+                    <div id="suppliersPage" class="page">
+                        <h2><i class="fas fa-truck"></i> Kelola Supplier</h2>
+                        <div class="form-container">
+                            <h3>Tambah Supplier Baru</h3>
+                            <form id="supplierForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Nama Supplier</label>
+                                        <input type="text" id="supplierName" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Jenis Rempah</label>
+                                        <select id="supplierType" required>
+                                            <option value="">Pilih Jenis</option>
+                                            <option value="cengkeh">Cengkeh</option>
+                                            <option value="lada">Lada</option>
+                                            <option value="pala">Pala</option>
+                                            <option value="kayu_manis">Kayu Manis</option>
+                                            <option value="jahe">Jahe</option>
+                                            <option value="kunyit">Kunyit</option>
+                                            <option value="campuran">Campuran</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Telepon</label>
+                                        <input type="tel" id="supplierPhone" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Email</label>
+                                        <input type="email" id="supplierEmail">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Alamat</label>
+                                    <textarea id="supplierAddress" rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan Supplier</button>
+                            </form>
+                        </div>
+
+                        <div class="form-container">
+                            <h3>Daftar Supplier</h3>
+                            <div class="table-container">
+                                <table id="suppliersTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Nama</th>
+                                            <th>Jenis Rempah</th>
+                                            <th>Telepon</th>
+                                            <th>Email</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Receivables Page -->
+                    <div id="receivablesPage" class="page">
+                        <h2><i class="fas fa-hand-holding-usd"></i> Kelola Piutang</h2>
+                        <div class="form-container">
+                            <h3>Tambah Piutang Baru</h3>
+                            <form id="receivableForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Pelanggan</label>
+                                        <select id="receivableCustomer" required>
+                                            <option value="">Pilih Pelanggan</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Jumlah Piutang (Rp)</label>
+                                        <input type="number" id="receivableAmount" required min="0">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Tanggal Jatuh Tempo</label>
+                                        <input type="date" id="receivableDueDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        <select id="receivableStatus" required>
+                                            <option value="belum_lunas">Belum Lunas</option>
+                                            <option value="sebagian">Sebagian Lunas</option>
+                                            <option value="lunas">Lunas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Deskripsi</label>
+                                    <textarea id="receivableDescription" rows="2" required></textarea>
+                                </div>
+                                <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan Piutang</button>
+                            </form>
+                        </div>
+
+                        <div class="form-container">
+                            <h3>Daftar Piutang</h3>
+                            <div class="table-container">
+                                <table id="receivablesTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Pelanggan</th>
+                                            <th>Jumlah</th>
+                                            <th>Jatuh Tempo</th>
+                                            <th>Status</th>
+                                            <th>Deskripsi</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Debts Page -->
+                    <div id="debtsPage" class="page">
+                        <h2><i class="fas fa-money-bill-wave"></i> Kelola Utang</h2>
+                        <div class="form-container">
+                            <h3>Tambah Utang Baru</h3>
+                            <form id="debtForm">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Supplier</label>
+                                        <select id="debtSupplier" required>
+                                            <option value="">Pilih Supplier</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Jumlah Utang (Rp)</label>
+                                        <input type="number" id="debtAmount" required min="0">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Tanggal Jatuh Tempo</label>
+                                        <input type="date" id="debtDueDate" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Status</label>
+                                        <select id="debtStatus" required>
+                                            <option value="belum_lunas">Belum Lunas</option>
+                                            <option value="sebagian">Sebagian Lunas</option>
+                                            <option value="lunas">Lunas</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Deskripsi</label>
+                                    <textarea id="debtDescription" rows="2" required></textarea>
+                                </div>
+                                <button type="submit" class="btn-success"><i class="fas fa-save"></i> Simpan Utang</button>
+                            </form>
+                        </div>
+
+                        <div class="form-container">
+                            <h3>Daftar Utang</h3>
+                            <div class="table-container">
+                                <table id="debtsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Supplier</th>
+                                            <th>Jumlah</th>
+                                            <th>Jatuh Tempo</th>
+                                            <th>Status</th>
+                                            <th>Deskripsi</th>
+                                            <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Reports Page -->
+                    <div id="reportsPage" class="page">
+                        <h2><i class="fas fa-chart-bar"></i> Laporan Keuangan</h2>
+                        <div class="form-container">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Dari Tanggal</label>
+                                    <input type="date" id="reportFromDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>Sampai Tanggal</label>
+                                    <input type="date" id="reportToDate">
+                                </div>
+                                <div class="form-group">
+                                    <label>Jenis Laporan</label>
+                                    <select id="reportType">
+                                        <option value="cashflow">Cash Flow</option>
+                                        <option value="income">Pemasukan</option>
+                                        <option value="expense">Pengeluaran</option>
+                                        <option value="receivable">Piutang</option>
+                                        <option value="debt">Utang</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button onclick="generateReport()" class="btn-success"><i class="fas fa-file-pdf"></i> Generate Laporan</button>
+                        </div>
+
+                        <div class="form-container">
+                            <h3>Ringkasan Keuangan</h3>
+                            <div class="stats-grid">
+                                <div class="stat-card">
+                                    <i class="fas fa-chart-line"></i>
+                                    <h3>Total Pemasukan</h3>
+                                    <div class="stat-value" id="reportTotalIncome">Rp 0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-chart-line"></i>
+                                    <h3>Total Pengeluaran</h3>
+                                    <div class="stat-value" id="reportTotalExpense">Rp 0</div>
+                                </div>
+                                <div class="stat-card">
+                                    <i class="fas fa-chart-line"></i>
+                                    <h3>Laba/Rugi</h3>
+                                    <div class="stat-value" id="reportProfit">Rp 0</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-container">
+                            <h3>Grafik Cash Flow</h3>
+                            <canvas id="cashFlowChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    
+    <!-- Chart.js for Reports -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Main JavaScript -->
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyC5SoEMSa7HqdMl0Ssaupc-Z8OByR2E1aQ",
+            authDomain: "testing-47f1e.firebaseapp.com",
+            databaseURL: "https://testing-47f1e-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "testing-47f1e",
+            storageBucket: "testing-47f1e.firebasestorage.app",
+            messagingSenderId: "1036606294271",
+            appId: "1:1036606294271:web:3e556aeaeaca7c75bee4ca",
+            measurementId: "G-83R71BXDDW"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+
+        let currentUser = null;
+        let cashFlowChart = null;
+
+        // DOM Elements
+        const loginPage = document.getElementById('loginPage');
+        const registerPage = document.getElementById('registerPage');
+        const appContainer = document.getElementById('appContainer');
+
+        // Login Functions
+        function showRegister() {
+            loginPage.style.display = 'none';
+            registerPage.style.display = 'block';
+        }
+
+        function showLogin() {
+            registerPage.style.display = 'none';
+            loginPage.style.display = 'block';
+        }
+
+        // Handle Login
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    loadUserData();
+                    showAlert('loginAlert', 'Login berhasil!', 'success');
+                    setTimeout(() => {
+                        loginPage.style.display = 'none';
+                        appContainer.style.display = 'block';
+                    }, 1000);
+                })
+                .catch((error) => {
+                    showAlert('loginAlert', error.message, 'error');
+                });
+        });
+
+        // Handle Register
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const company = document.getElementById('registerCompany').value;
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    currentUser = userCredential.user;
+                    
+                    // Save user data to database
+                    database.ref('users/' + currentUser.uid).set({
+                        company: company,
+                        email: email,
+                        createdAt: new Date().toISOString()
+                    });
+                    
+                    showAlert('registerAlert', 'Pendaftaran berhasil!', 'success');
+                    setTimeout(() => {
+                        showLogin();
+                    }, 1500);
+                })
+                .catch((error) => {
+                    showAlert('registerAlert', error.message, 'error');
+                });
+        });
+
+        // Load user data
+        function loadUserData() {
+            database.ref('users/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    const userData = snapshot.val();
+                    if (userData) {
+                        document.getElementById('companyName').textContent = userData.company;
+                        document.getElementById('userEmail').textContent = userData.email;
+                    }
+                });
+        }
+
+        // Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId + 'Page').classList.add('active');
+            
+            // Add active class to clicked nav item
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Load data for the page
+            if (pageId === 'dashboard') {
+                loadDashboardData();
+            } else if (pageId === 'transactions') {
+                loadTransactions();
+            } else if (pageId === 'customers') {
+                loadCustomers();
+                populateCustomerDropdowns();
+            } else if (pageId === 'suppliers') {
+                loadSuppliers();
+                populateSupplierDropdowns();
+            } else if (pageId === 'receivables') {
+                loadReceivables();
+            } else if (pageId === 'debts') {
+                loadDebts();
+            } else if (pageId === 'reports') {
+                loadReports();
+            }
+        }
+
+        // Dashboard Functions
+        function loadDashboardData() {
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1;
+            const currentYear = today.getFullYear();
+            
+            database.ref('transactions/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    let totalIncome = 0;
+                    let totalExpense = 0;
+                    let monthlyIncome = 0;
+                    let monthlyExpense = 0;
+                    const transactions = [];
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const transaction = childSnapshot.val();
+                        const transDate = new Date(transaction.date);
+                        
+                        if (transaction.type === 'income') {
+                            totalIncome += parseFloat(transaction.amount);
+                            if (transDate.getMonth() + 1 === currentMonth && 
+                                transDate.getFullYear() === currentYear) {
+                                monthlyIncome += parseFloat(transaction.amount);
+                            }
+                        } else {
+                            totalExpense += parseFloat(transaction.amount);
+                            if (transDate.getMonth() + 1 === currentMonth && 
+                                transDate.getFullYear() === currentYear) {
+                                monthlyExpense += parseFloat(transaction.amount);
+                            }
+                        }
+                        
+                        transactions.push(transaction);
+                    });
+                    
+                    // Calculate total receivables
+                    database.ref('receivables/' + currentUser.uid).once('value')
+                        .then((receivableSnapshot) => {
+                            let totalReceivable = 0;
+                            receivableSnapshot.forEach((childSnapshot) => {
+                                const receivable = childSnapshot.val();
+                                if (receivable.status !== 'lunas') {
+                                    totalReceivable += parseFloat(receivable.amount);
+                                }
+                            });
+                            
+                            // Update dashboard
+                            document.getElementById('currentBalance').textContent = 
+                                formatCurrency(totalIncome - totalExpense);
+                            document.getElementById('monthlyIncome').textContent = 
+                                formatCurrency(monthlyIncome);
+                            document.getElementById('monthlyExpense').textContent = 
+                                formatCurrency(monthlyExpense);
+                            document.getElementById('totalReceivable').textContent = 
+                                formatCurrency(totalReceivable);
+                            
+                            // Show recent transactions
+                            displayRecentTransactions(transactions.slice(0, 5));
+                        });
+                });
+        }
+
+        // Transaction Functions
+        document.getElementById('transactionForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const transaction = {
+                type: document.getElementById('transType').value,
+                category: document.getElementById('transCategory').value,
+                amount: parseFloat(document.getElementById('transAmount').value),
+                date: document.getElementById('transDate').value,
+                description: document.getElementById('transDescription').value,
+                notes: document.getElementById('transNotes').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const newTransactionRef = database.ref('transactions/' + currentUser.uid).push();
+            newTransactionRef.set(transaction)
+                .then(() => {
+                    alert('Transaksi berhasil disimpan!');
+                    document.getElementById('transactionForm').reset();
+                    document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
+                    loadTransactions();
+                    loadDashboardData();
+                })
+                .catch((error) => {
+                    alert('Error: ' + error.message);
+                });
+        });
+
+        function loadTransactions() {
+            database.ref('transactions/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    const tbody = document.querySelector('#transactionsTable tbody');
+                    tbody.innerHTML = '';
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const transaction = childSnapshot.val();
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${formatDate(transaction.date)}</td>
+                            <td>${transaction.description}</td>
+                            <td>${getCategoryName(transaction.category)}</td>
+                            <td><span class="badge ${transaction.type === 'income' ? 'badge-success' : 'badge-danger'}">
+                                ${transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}
+                            </span></td>
+                            <td>${formatCurrency(transaction.amount)}</td>
+                            <td class="action-buttons">
+                                <button class="btn-warning action-btn" onclick="editTransaction('${childSnapshot.key}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-danger action-btn" onclick="deleteTransaction('${childSnapshot.key}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        // Customer Functions
+        document.getElementById('customerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const customer = {
+                name: document.getElementById('customerName').value,
+                phone: document.getElementById('customerPhone').value,
+                email: document.getElementById('customerEmail').value,
+                creditLimit: document.getElementById('customerCreditLimit').value || 0,
+                address: document.getElementById('customerAddress').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const newCustomerRef = database.ref('customers/' + currentUser.uid).push();
+            newCustomerRef.set(customer)
+                .then(() => {
+                    alert('Pelanggan berhasil disimpan!');
+                    document.getElementById('customerForm').reset();
+                    loadCustomers();
+                    populateCustomerDropdowns();
+                });
+        });
+
+        function loadCustomers() {
+            database.ref('customers/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    const tbody = document.querySelector('#customersTable tbody');
+                    tbody.innerHTML = '';
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const customer = childSnapshot.val();
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${customer.name}</td>
+                            <td>${customer.phone}</td>
+                            <td>${customer.email || '-'}</td>
+                            <td>${formatCurrency(customer.creditLimit)}</td>
+                            <td class="action-buttons">
+                                <button class="btn-warning action-btn" onclick="editCustomer('${childSnapshot.key}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-danger action-btn" onclick="deleteCustomer('${childSnapshot.key}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        // Supplier Functions
+        document.getElementById('supplierForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const supplier = {
+                name: document.getElementById('supplierName').value,
+                type: document.getElementById('supplierType').value,
+                phone: document.getElementById('supplierPhone').value,
+                email: document.getElementById('supplierEmail').value,
+                address: document.getElementById('supplierAddress').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const newSupplierRef = database.ref('suppliers/' + currentUser.uid).push();
+            newSupplierRef.set(supplier)
+                .then(() => {
+                    alert('Supplier berhasil disimpan!');
+                    document.getElementById('supplierForm').reset();
+                    loadSuppliers();
+                    populateSupplierDropdowns();
+                });
+        });
+
+        function loadSuppliers() {
+            database.ref('suppliers/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    const tbody = document.querySelector('#suppliersTable tbody');
+                    tbody.innerHTML = '';
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const supplier = childSnapshot.val();
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${supplier.name}</td>
+                            <td>${getSpiceTypeName(supplier.type)}</td>
+                            <td>${supplier.phone}</td>
+                            <td>${supplier.email || '-'}</td>
+                            <td class="action-buttons">
+                                <button class="btn-warning action-btn" onclick="editSupplier('${childSnapshot.key}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-danger action-btn" onclick="deleteSupplier('${childSnapshot.key}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        // Receivable Functions
+        document.getElementById('receivableForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const receivable = {
+                customerId: document.getElementById('receivableCustomer').value,
+                customerName: document.getElementById('receivableCustomer').selectedOptions[0].text,
+                amount: parseFloat(document.getElementById('receivableAmount').value),
+                dueDate: document.getElementById('receivableDueDate').value,
+                status: document.getElementById('receivableStatus').value,
+                description: document.getElementById('receivableDescription').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const newReceivableRef = database.ref('receivables/' + currentUser.uid).push();
+            newReceivableRef.set(receivable)
+                .then(() => {
+                    alert('Piutang berhasil disimpan!');
+                    document.getElementById('receivableForm').reset();
+                    loadReceivables();
+                    loadDashboardData();
+                });
+        });
+
+        function loadReceivables() {
+            database.ref('receivables/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    const tbody = document.querySelector('#receivablesTable tbody');
+                    tbody.innerHTML = '';
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const receivable = childSnapshot.val();
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${receivable.customerName}</td>
+                            <td>${formatCurrency(receivable.amount)}</td>
+                            <td>${formatDate(receivable.dueDate)}</td>
+                            <td><span class="badge ${getStatusBadge(receivable.status)}">
+                                ${getStatusName(receivable.status)}
+                            </span></td>
+                            <td>${receivable.description}</td>
+                            <td class="action-buttons">
+                                <button class="btn-warning action-btn" onclick="editReceivable('${childSnapshot.key}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-danger action-btn" onclick="deleteReceivable('${childSnapshot.key}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        // Debt Functions
+        document.getElementById('debtForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const debt = {
+                supplierId: document.getElementById('debtSupplier').value,
+                supplierName: document.getElementById('debtSupplier').selectedOptions[0].text,
+                amount: parseFloat(document.getElementById('debtAmount').value),
+                dueDate: document.getElementById('debtDueDate').value,
+                status: document.getElementById('debtStatus').value,
+                description: document.getElementById('debtDescription').value,
+                createdAt: new Date().toISOString()
+            };
+            
+            const newDebtRef = database.ref('debts/' + currentUser.uid).push();
+            newDebtRef.set(debt)
+                .then(() => {
+                    alert('Utang berhasil disimpan!');
+                    document.getElementById('debtForm').reset();
+                    loadDebts();
+                });
+        });
+
+        function loadDebts() {
+            database.ref('debts/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    const tbody = document.querySelector('#debtsTable tbody');
+                    tbody.innerHTML = '';
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const debt = childSnapshot.val();
+                        const row = document.createElement('tr');
+                        
+                        row.innerHTML = `
+                            <td>${debt.supplierName}</td>
+                            <td>${formatCurrency(debt.amount)}</td>
+                            <td>${formatDate(debt.dueDate)}</td>
+                            <td><span class="badge ${getStatusBadge(debt.status)}">
+                                ${getStatusName(debt.status)}
+                            </span></td>
+                            <td>${debt.description}</td>
+                            <td class="action-buttons">
+                                <button class="btn-warning action-btn" onclick="editDebt('${childSnapshot.key}')">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-danger action-btn" onclick="deleteDebt('${childSnapshot.key}')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        `;
+                        
+                        tbody.appendChild(row);
+                    });
+                });
+        }
+
+        // Report Functions
+        function loadReports() {
+            database.ref('transactions/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    let totalIncome = 0;
+                    let totalExpense = 0;
+                    const monthlyData = {};
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const transaction = childSnapshot.val();
+                        const date = new Date(transaction.date);
+                        const monthKey = `${date.getFullYear()}-${date.getMonth() + 1}`;
+                        
+                        if (!monthlyData[monthKey]) {
+                            monthlyData[monthKey] = { income: 0, expense: 0 };
+                        }
+                        
+                        if (transaction.type === 'income') {
+                            totalIncome += parseFloat(transaction.amount);
+                            monthlyData[monthKey].income += parseFloat(transaction.amount);
+                        } else {
+                            totalExpense += parseFloat(transaction.amount);
+                            monthlyData[monthKey].expense += parseFloat(transaction.amount);
+                        }
+                    });
+                    
+                    // Update report summary
+                    document.getElementById('reportTotalIncome').textContent = formatCurrency(totalIncome);
+                    document.getElementById('reportTotalExpense').textContent = formatCurrency(totalExpense);
+                    document.getElementById('reportProfit').textContent = formatCurrency(totalIncome - totalExpense);
+                    
+                    // Create chart
+                    createCashFlowChart(monthlyData);
+                });
+        }
+
+        function createCashFlowChart(monthlyData) {
+            const ctx = document.getElementById('cashFlowChart').getContext('2d');
+            
+            const months = Object.keys(monthlyData).sort();
+            const incomeData = months.map(month => monthlyData[month].income);
+            const expenseData = months.map(month => monthlyData[month].expense);
+            
+            if (cashFlowChart) {
+                cashFlowChart.destroy();
+            }
+            
+            cashFlowChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months.map(month => formatMonth(month)),
+                    datasets: [
+                        {
+                            label: 'Pemasukan',
+                            data: incomeData,
+                            borderColor: '#27ae60',
+                            backgroundColor: 'rgba(39, 174, 96, 0.1)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Pengeluaran',
+                            data: expenseData,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return 'Rp ' + value.toLocaleString('id-ID');
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Helper Functions
+        function showAlert(elementId, message, type) {
+            const alertElement = document.getElementById(elementId);
+            alertElement.textContent = message;
+            alertElement.className = 'alert alert-' + (type === 'success' ? 'success' : 'error');
+            alertElement.style.display = 'block';
+            
+            setTimeout(() => {
+                alertElement.style.display = 'none';
+            }, 3000);
+        }
+
+        function formatCurrency(amount) {
+            return 'Rp ' + parseFloat(amount).toLocaleString('id-ID');
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID');
+        }
+
+        function formatMonth(monthKey) {
+            const [year, month] = monthKey.split('-');
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 
+                               'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+            return monthNames[parseInt(month) - 1] + ' ' + year;
+        }
+
+        function getCategoryName(category) {
+            const categories = {
+                'penjualan': 'Penjualan Rempah',
+                'pembelian': 'Pembelian Bahan',
+                'operasional': 'Biaya Operasional',
+                'gaji': 'Gaji Karyawan',
+                'transport': 'Transportasi',
+                'lainnya': 'Lainnya'
+            };
+            return categories[category] || category;
+        }
+
+        function getSpiceTypeName(type) {
+            const types = {
+                'cengkeh': 'Cengkeh',
+                'lada': 'Lada',
+                'pala': 'Pala',
+                'kayu_manis': 'Kayu Manis',
+                'jahe': 'Jahe',
+                'kunyit': 'Kunyit',
+                'campuran': 'Campuran'
+            };
+            return types[type] || type;
+        }
+
+        function getStatusName(status) {
+            const statuses = {
+                'belum_lunas': 'Belum Lunas',
+                'sebagian': 'Sebagian Lunas',
+                'lunas': 'Lunas'
+            };
+            return statuses[status] || status;
+        }
+
+        function getStatusBadge(status) {
+            const badges = {
+                'belum_lunas': 'badge-danger',
+                'sebagian': 'badge-warning',
+                'lunas': 'badge-success'
+            };
+            return badges[status] || 'badge-warning';
+        }
+
+        function populateCustomerDropdowns() {
+            database.ref('customers/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    const dropdown = document.getElementById('receivableCustomer');
+                    dropdown.innerHTML = '<option value="">Pilih Pelanggan</option>';
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const customer = childSnapshot.val();
+                        const option = document.createElement('option');
+                        option.value = childSnapshot.key;
+                        option.textContent = customer.name;
+                        dropdown.appendChild(option);
+                    });
+                });
+        }
+
+        function populateSupplierDropdowns() {
+            database.ref('suppliers/' + currentUser.uid).once('value')
+                .then((snapshot) => {
+                    const dropdown = document.getElementById('debtSupplier');
+                    dropdown.innerHTML = '<option value="">Pilih Supplier</option>';
+                    
+                    snapshot.forEach((childSnapshot) => {
+                        const supplier = childSnapshot.val();
+                        const option = document.createElement('option');
+                        option.value = childSnapshot.key;
+                        option.textContent = supplier.name;
+                        dropdown.appendChild(option);
+                    });
+                });
+        }
+
+        function displayRecentTransactions(transactions) {
+            const tbody = document.querySelector('#recentTransactions tbody');
+            tbody.innerHTML = '';
+            
+            transactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${formatDate(transaction.date)}</td>
+                    <td>${transaction.description}</td>
+                    <td><span class="badge ${transaction.type === 'income' ? 'badge-success' : 'badge-danger'}">
+                        ${transaction.type === 'income' ? 'Pemasukan' : 'Pengeluaran'}
+                    </span></td>
+                    <td>${formatCurrency(transaction.amount)}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        function searchTransactions() {
+            const searchTerm = document.getElementById('searchTransaction').value.toLowerCase();
+            const rows = document.querySelectorAll('#transactionsTable tbody tr');
+            
+            rows.forEach(row => {
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(searchTerm) ? '' : 'none';
+            });
+        }
+
+        function generateReport() {
+            const fromDate = document.getElementById('reportFromDate').value;
+            const toDate = document.getElementById('reportToDate').value;
+            const reportType = document.getElementById('reportType').value;
+            
+            // Here you would generate the report based on the selected parameters
+            alert(`Laporan ${reportType} dari ${fromDate} sampai ${toDate} akan dibuat.\nFitur export ke PDF/Excel akan dikembangkan.`);
+        }
+
+        // Delete functions (you'll need to implement edit functions similarly)
+        function deleteTransaction(transactionId) {
+            if (confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+                database.ref('transactions/' + currentUser.uid + '/' + transactionId).remove()
+                    .then(() => {
+                        loadTransactions();
+                        loadDashboardData();
+                    });
+            }
+        }
+
+        function deleteCustomer(customerId) {
+            if (confirm('Apakah Anda yakin ingin menghapus pelanggan ini?')) {
+                database.ref('customers/' + currentUser.uid + '/' + customerId).remove()
+                    .then(() => {
+                        loadCustomers();
+                        populateCustomerDropdowns();
+                    });
+            }
+        }
+
+        function deleteSupplier(supplierId) {
+            if (confirm('Apakah Anda yakin ingin menghapus supplier ini?')) {
+                database.ref('suppliers/' + currentUser.uid + '/' + supplierId).remove()
+                    .then(() => {
+                        loadSuppliers();
+                        populateSupplierDropdowns();
+                    });
+            }
+        }
+
+        function deleteReceivable(receivableId) {
+            if (confirm('Apakah Anda yakin ingin menghapus piutang ini?')) {
+                database.ref('receivables/' + currentUser.uid + '/' + receivableId).remove()
+                    .then(() => {
+                        loadReceivables();
+                        loadDashboardData();
+                    });
+            }
+        }
+
+        function deleteDebt(debtId) {
+            if (confirm('Apakah Anda yakin ingin menghapus utang ini?')) {
+                database.ref('debts/' + currentUser.uid + '/' + debtId).remove()
+                    .then(() => {
+                        loadDebts();
+                    });
+            }
+        }
+
+        function logout() {
+            if (confirm('Apakah Anda yakin ingin logout?')) {
+                auth.signOut().then(() => {
+                    appContainer.style.display = 'none';
+                    loginPage.style.display = 'block';
+                    registerPage.style.display = 'none';
+                });
+            }
+        }
+
+        // Set current date in forms
+        document.getElementById('transDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('receivableDueDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('debtDueDate').value = new Date().toISOString().split('T')[0];
+        document.getElementById('reportFromDate').value = new Date(new Date().setDate(1)).toISOString().split('T')[0];
+        document.getElementById('reportToDate').value = new Date().toISOString().split('T')[0];
+
+        // Check auth state on page load
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                currentUser = user;
+                loadUserData();
+                loginPage.style.display = 'none';
+                appContainer.style.display = 'block';
+                loadDashboardData();
+            }
+        });
+    </script>
+</body>
+</html>
